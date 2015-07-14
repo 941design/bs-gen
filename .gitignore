@@ -6,4 +6,4 @@ cabal.sandbox.config
 dist/build
 dist/dist-sandbox*
 dist/package.conf.inplace
-dist/setup-conf
+dist/setup-config
