@@ -2,7 +2,7 @@
 module Main where
 
 import Snap.Core (Snap, Method(GET), route, method, writeBS, liftSnap)
-import Snap.Http.Server (quickHttpServe)
+import Snap.Http.Server (httpServe, defaultConfig, setPort)
 import Control.Monad.IO.Class (liftIO)
 import Data.ByteString.Char8 (pack, unpack) -- readFile, split, lines
 import Data.Maybe (fromJust)
@@ -19,7 +19,7 @@ bs_file = "./dist/resources/bs.csv"
 main :: IO ()
 main = do
   putStrLn "resource path: /generate-bs"
-  quickHttpServe site
+  httpServe (setPort 8181 defaultConfig) site
 
 
 -- | Main entry point, defining all routes
