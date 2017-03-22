@@ -1,4 +1,4 @@
-FROM haskell:7.8
+FROM haskell:8
 
 RUN apt-get update
 RUN apt-get install -y libffi-dev
