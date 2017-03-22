@@ -7,8 +7,8 @@ import Control.Monad.IO.Class (liftIO)
 import Data.ByteString.Char8 (pack, unpack) -- readFile, split, lines
 import Data.Maybe (fromJust)
 import Data.List (transpose, intercalate)
-import Data.List.Split (splitOn)
 import System.Random
+import Text.ParserCombinators.Parsec
 
 
 -- | Path to file containing the bullshit
@@ -18,21 +18,22 @@ bs_file = "./dist/resources/bs.csv"
 -- | The main function
 main :: IO ()
 main = do
-  putStrLn "resource path: /generate-bs"
+  putStrLn "resource path: /"
   httpServe (setPort 8181 defaultConfig) site
 
 
 -- | Main entry point, defining all routes
 site :: Snap ()
-site = route [ ("generate-bs", method GET $ bsHandler) ]
+site = route [ ("", method GET $ bsHandler) ]
 
 
 -- | Handler for producing the bullshit response
 bsHandler :: Snap ()
 bsHandler = do
-  content <- liftIO . readFile $ bs_file
-  let table = map filterFromJust $ transpose . csvToTable $ content
-  phrase <- liftIO . randomBS $ table
+  phrase <- liftIO $ readFile bs_file >>= \raw ->
+    case readCSV raw of
+      Left err -> undefined
+      Right table -> randomBS . map (filter (not . null)) $ transpose table
   writeBS . pack $ phrase
 
 
@@ -44,16 +45,11 @@ randomBS xs = do
 
 
 -- | Reads csv to table
-csvToTable :: String -> [[Maybe String]]
-csvToTable = map (map maybeString . (splitOn ",")) . lines
-    where maybeString "" = Nothing
-          maybeString s = Just s
-
-
--- | Filters values / drops Nothings
-filterFromJust :: [Maybe a] -> [a]
-filterFromJust = map fromJust . filter onlyValues
-  where onlyValues = maybe False (const True)
+readCSV :: String -> Either ParseError [[String]]
+readCSV s = parse lines "NAME IGNORED" s
+  where
+    lines = sepBy cells newline
+    cells = sepBy (many . noneOf $ ",\n") (char ',')
 
 
 -- | Picks random value from list
