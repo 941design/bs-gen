@@ -5,6 +5,7 @@ import Snap.Core (Snap, Method(GET), route, method, writeBS)
 import Snap.Http.Server (httpServe, defaultConfig, setPort)
 import Control.Monad.IO.Class (liftIO)
 import Data.ByteString.Char8 (pack)
+import Data.Char (toUpper)
 import Test.QuickCheck.Gen (generate)
 import Testimonial (testimonial)
 
@@ -29,4 +30,6 @@ site = route [ ("", method GET $ bsHandler) ]
 bsHandler :: Snap ()
 bsHandler = do
   phrase <- liftIO $ generate testimonial
-  writeBS . pack $ phrase
+  writeBS . pack $ capitalize phrase ++ "."
+  where
+    capitalize (head:tail) = toUpper head : tail
