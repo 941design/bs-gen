@@ -17,6 +17,4 @@ executable bs-gen
                        bytestring       >= 0.9.1        && < 0.11,
                        snap-core        >= 1.0.1,
                        snap-server      >= 1.0.1,
-                       transformers     >= 0.4.3        && < 0.6,
-                       random           >= 1.1,
-                       parsec           >= 3.1.11
+                       QuickCheck       >= 2.9.2

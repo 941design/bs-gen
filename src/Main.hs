@@ -1,14 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
-import Snap.Core (Snap, Method(GET), route, method, writeBS, liftSnap)
+import Snap.Core (Snap, Method(GET), route, method, writeBS)
 import Snap.Http.Server (httpServe, defaultConfig, setPort)
 import Control.Monad.IO.Class (liftIO)
-import Data.ByteString.Char8 (pack, unpack) -- readFile, split, lines
-import Data.Maybe (fromJust)
-import Data.List (transpose, intercalate)
-import System.Random
-import Text.ParserCombinators.Parsec
+import Data.ByteString.Char8 (pack)
+import Test.QuickCheck.Gen (generate)
+import Testimonial (testimonial)
 
 
 -- | Path to file containing the bullshit
@@ -30,32 +28,5 @@ site = route [ ("", method GET $ bsHandler) ]
 -- | Handler for producing the bullshit response
 bsHandler :: Snap ()
 bsHandler = do
-  phrase <- liftIO $ readFile bs_file >>= \raw ->
-    case readCSV raw of
-      Left err -> undefined
-      Right table -> randomBS . map (filter (not . null)) $ transpose table
+  phrase <- liftIO $ generate testimonial
   writeBS . pack $ phrase
-
-
--- | Picks random bullshit from buzzword table
-randomBS :: [[String]] -> IO String
-randomBS xs = do
-  buzzwords <- mapM randomX xs
-  return (intercalate " " buzzwords)
-
-
--- | Reads csv to table
-readCSV :: String -> Either ParseError [[String]]
-readCSV s = parse lines "NAME IGNORED" s
-  where
-    lines = sepBy cells newline
-    cells = sepBy (many . noneOf $ ",\n") (char ',')
-
-
--- | Picks random value from list
-randomX :: [a] -> IO a
-randomX xs = do
-  idx <- getStdRandom (randomR (start, end))
-  return (xs!!idx)
-  where start = 0
-        end = (length xs) - 1
