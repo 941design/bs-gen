@@ -86,16 +86,11 @@ attribute = oneof [ pure "an experience I don't want to miss"
 temporal = oneof [ pure "for the last " <++> number <++> space <++> timeUnit
                  , pure "every " <++> number <++> space <++> timeUnit
                  , pure "in a few " <++> timeUnit
-                 , pure "many " <++> timeUnit
-                 , pure "for some " <++> timeUnit
                  , pure "every day"
                  , pure "every morning"
                  , pure "on mondays"
                  , pure "on my coffee breaks"
                  , pure "at lunchtime"
-                 , pure "regularly"
-                 , pure "often"
-                 , pure "continuously"
                  ]
 
 timeUnit = elements [ "decades"
