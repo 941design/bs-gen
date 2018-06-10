@@ -13,8 +13,8 @@ executable bs-gen
   hs-source-dirs:      src
   main-is:             Main.hs
 
-  build-depends:       base             >= 4.9          && < 4.10,
-                       bytestring       >= 0.9.1        && < 0.11,
-                       snap-core        >= 1.0.1,
-                       snap-server      >= 1.0.1,
-                       QuickCheck       >= 2.9.2
+  build-depends:       base             >= 4.10,
+                       bytestring       >= 0.10,
+                       snap-core        >= 1.0.3,
+                       snap-server      >= 1.0.3,
+                       QuickCheck       >= 2.10
