@@ -7,3 +7,4 @@ dist/build
 dist/dist-sandbox*
 dist/package.conf.inplace
 dist/setup-config
+.stack-work/
