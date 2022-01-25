@@ -15,3 +15,10 @@ _undisputable bullshit generating low-footprint server_
 ## running
 
 `stack run`
+
+visit [localhost:8181](localhost:8181) and be inspired
+
+
+## rationale
+
+I love Haskell, and I always wanted to do something useful with it... I failed.
