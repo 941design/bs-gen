@@ -16,7 +16,7 @@ _undisputable bullshit generating low-footprint server_
 
 `stack run`
 
-visit [localhost:8181](localhost:8181) and be inspired
+visit [localhost:8181](http://localhost:8181) and be inspired
 
 
 ## rationale
