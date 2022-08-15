@@ -4,55 +4,68 @@ import Test.QuickCheck.Gen
 
 -- https://blog.hubspot.com/marketing/testimonial-page-examples#sm.0000126iyiq2p6dxtvgw5la1hbhvc
 
-testimonial = oneof [ action <++> space <++> term <++> space <++> result
-                    , temporal <++> pure ", I was " <++> action <++> space <++> term
-                    , pure "I was " <++> action <++> space <++> term <++> pure ", and it " <++> result
-                    , term <++> space <++> prescription
-                    , term <++> pure " are " <++> attribute
-                    ]
-  
-action = elements [ "working with"
-                  , "implementing"
-                  , "adopting"
-                  , "studying"
-                  , "getting to know"
-                  , "learning about"
-                  , "concentrating on"
-                  , "catching a glimpse of"
+testimonial = frequency [ (3, action <++> space <++> term <++> space <++> result)
+                        , (1, temporal <++> pure ", I was " <++> action <++> space <++> term)
+                        , (2, pure "I was " <++> action <++> space <++> term <++> pure ", and it " <++> result)
+                        , (2, term <++> space <++> prescription)
+                        , (3, term <++> pure " are " <++> attribute)
+                        ]
+
+action = elements [ "adopting"
+                  , "applying"
                   , "appreciating"
+                  , "catching a glimpse of"
+                  , "concentrating on"
+                  , "employing"
+                  , "establishing"
+                  , "focusing on"
+                  , "getting to know"
+                  , "implementing"
+                  , "investing into"
+                  , "learning about"
+                  , "prioritizing on"
+                  , "studying"
+                  , "working with"
+                  , "zeroing in on"
                   ]
 
-result = oneof [ pure "transformed both my professional, as well as my private life"
-               , pure "made my job worthwhile"
-               , pure "started the transition we were looking for"
-               , pure "had a " <++> adj <++> pure " impact on our business"
-               , pure "impressed our " <++> whom <++> pure " like no other technology"
-               , pure "raised our revenues by over " <++> number <++> pure "0 percent"
-               , pure "helped us reach all our business goals"
-               , pure "changed my thinking"
-               , pure "was " <++> attribute
-               ]
+result = frequency [ (1, pure "transformed both my professional, as well as my private life")
+                   , (1, pure "made my job worthwhile")
+                   , (1, pure "started the transition we were looking for")
+                   , (5, pure "had a " <++> adj <++> pure " impact on our business")
+                   , (5, pure "impressed our " <++> whom <++> pure " like no other technology")
+                   , (1, pure "saved our business")
+                   , (1, pure "fostered public interest in our company")
+                   , (2, pure "rejuvenated the relationship with our " <++> whom)
+                   , (1, pure "raised our revenues by over " <++> number <++> pure "0 percent")
+                   , (1, pure "helped us reach all our business goals")
+                   , (1, pure "changed my thinking")
+                   , (10, pure "was " <++> attribute)
+                   ]
   where
     whom = elements [ "business partners"
-                    , "shareholders"
                     , "customers"
+                    , "investors"
+                    , "shareholders"
                     ]
     adj = elements [ "enormous"
                    , "huge"
-                   , "tremendeous"
                    , "impressive"
+                   , "magnificient"
+                   , "tremendeous"
+                   , "unbelievable"
                    , "unprecedented"
                    ]
 
-prescription = oneof [ pure "should be part of any C.S. curriculum"
-                     , pure "should be taught in elementary school"
-                     , pure "are an opportunity everyone should take"
-                     , pure "give you so many more options"                       
-                     , pure "can no longer be ignored"
-                     , pure "are not going to stop us"
-                     , pure "is just another definition of success"                                              
-                     , pure "are " <++> attribute
-                     ]
+prescription = frequency [ (1, pure "should be part of any C.S. curriculum")
+                         , (1, pure "should be taught in elementary school")
+                         , (1, pure "are an opportunity everyone should take")
+                         , (1, pure "give you so many more options")
+                         , (1, pure "can no longer be ignored")
+                         , (1, pure "are not going to stop us") -- lol
+                         , (1, pure "is just another definition of success")
+                         , (6, pure "are " <++> attribute)
+                         ]
 
 attribute = oneof [ pure "an experience I don't want to miss"
                   , pure "intimidating at first, but definitely worth the ride"
@@ -65,22 +78,25 @@ attribute = oneof [ pure "an experience I don't want to miss"
                   , pure "the next big thing"
                   , pure "my greatest accomplishment"                    
                   , pure "exactly what I was looking for"
-                  , adverb <++> elements [ " magnificient"
-                                         , " inspiring"
-                                         , " awesome"
-                                         , " amazing"
-                                         , " empowering"
-                                         , " wonderful"
-                                         , " easy to master"
-                                         ]
+                  , frequency [ (1, adverb <++> space)
+                              , (2, empty)
+                              ] <++> elements [ "magnificient"
+                                              , "inspiring"
+                                              , "awesome"
+                                              , "amazing"
+                                              , "empowering"
+                                              , "wonderful"
+                                              , "easy to master"
+                                              ]
                   ]
   where
-    adverb = elements [ "truly"
-                      , "genuinely"
-                      , "overwhelmingly"
-                      , "really"
+    adverb = elements [ "genuinely"
                       , "incredibly"
                       , "just"
+                      , "overwhelmingly"
+                      , "really"
+                      , "simply"
+                      , "truly"                   
                       ]
       
 temporal = oneof [ pure "for the last " <++> number <++> space <++> timeUnit
@@ -105,92 +121,99 @@ timeUnit = elements [ "decades"
                     , "fractions of a second"
                     ]
 
+empty = pure ""
+
 space = pure " "
 
 number = elements $ map show [2..10]
 
 plural = (==) 's' . last
 
-adverb = elements [ "extremely"
+adverb = elements [ "completely"
                   , "continuously"
-                  , "completely"
                   , "eventually"
-                  , "seamlessly"
+                  , "extremely"
                   , "immediately"
-                  , "transparently"
                   , "independently"
-                  , "reliably"
                   , "modularly"
                   , "next-generation"
+                  , "reliably"
+                  , "seamlessly"
+                  , "transparently"
                   , "truly"
                   ]
 
-adjective = elements [ "reactive"
-                     , "resiliant"
-                     , "intuitive"
-                     , "scalable"
-                     , "effective"
-                     , "stateless"
-                     , "dependency-aware"
-                     , "non-blocking"
-                     , "redundant"
-                     , "correlated"
+adjective = elements [ "actor-based"
                      , "agile"
-                     , "improved"
-                     , "integrated"
-                     , "technical"
-                     , "lightweight"
+                     , "autonomous"
                      , "certified"
+                     , "configurable"
+                     , "correlated"
+                     , "dependency-aware"
+                     , "effective"
                      , "external"
                      , "feature-driven"
-                     , "highly available"
+                     , "fine grained"
                      , "fine granular"
-                     , "actor-based"
-                     , "configurable"
+                     , "highly available"
+                     , "improved"
+                     , "innovative"
+                     , "integrated"
+                     , "intuitive"
+                     , "lightweight"
+                     , "modular"
+                     , "non-blocking"
                      , "parallel"
                      , "persistent"
                      , "radical"
+                     , "reactive"
+                     , "redundant"
+                     , "resiliant"
+                     , "scalable"
+                     , "stateless"
+                     , "technical"
                      ]
 
 noun = noun1 <++> space <++> noun2
   where
-    noun1 = elements [ "meta"
-                     , "hypervisor"
-                     , "activator"
+    noun1 = elements [ "activator"
+                     , "application"
+                     , "business"
                      , "client"
-                     , "process"
+                     , "cloud"
                      , "consumer"
+                     , "core"
                      , "dynamic"
                      , "enterprise"
-                     , "application"
-                     , "quality"
-                     , "cloud"
                      , "full-stack"
-                     , "core"
-                     , "business"
-                     , "virtual"
-                     , "marketing"
+                     , "hypervisor"
                      , "key"
+                     , "marketing"
+                     , "meta"
+                     , "process"
+                     , "quality"
+                     , "virtual"
                      ]
-    noun2 = elements [ "infrastructures"
-                     , "networks"
-                     , "architectures"
+    noun2 = elements [ "architectures"
                      , "clusters"
+                     , "distributions"
                      , "engines"
                      , "frameworks"
-                     , "systems"
-                     , "platforms"
-                     , "metrics"
-                     , "resources"
+                     , "infrastructures"                     
                      , "interfaces"
-                     , "distributions"
-                     , "toolchains"
-                     , "redesigns"
+                     , "metrics"
                      , "milestones"
+                     , "networks"
+                     , "platforms"
+                     , "redesigns"
+                     , "resources"
+                     , "systems"
+                     , "toolchains"
                      ]
 
-term = adverb <++> space <++> adjective <++> space <++> noun
+term = frequency [ (1, adverb <++> space )
+                 , (1, empty)
+                 ] <++> adjective <++> space <++> noun
 
 (<++>) :: Monoid a => Gen a -> Gen a -> Gen a
 (<++>) a b = mappend <$> a <*> b
-
