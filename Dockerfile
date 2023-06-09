@@ -11,6 +11,7 @@ ADD bs-gen.cabal app/bs-gen.cabal
 
 RUN cd app
 
+RUN stack init
 RUN stack install --install-ghc
 
 WORKDIR /
