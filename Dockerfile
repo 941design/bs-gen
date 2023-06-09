@@ -11,7 +11,7 @@ ADD bs-gen.cabal app/bs-gen.cabal
 
 RUN cd app
 
-RUN stack install
+RUN stack install --install-ghc
 
 WORKDIR /
 CMD [ "/dist/build/bs-gen/bs-gen" ]
