@@ -46,18 +46,17 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v3
     - name: Download Artifact
       uses: actions/download-artifact@v3
       with:
         name: bs-gen
     - name: ls
-      run: ls -ltr ..
-    - name: pwd
-      run: pwd
+      run: ls -ltr
     - name: Build
       uses: docker/build-push-action@v3
       with:
         context: .
-        file: ../Dockerfile
+        file: ./Dockerfile
         push: false
         tags: asdf/qwer:1.2.3
