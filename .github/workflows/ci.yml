@@ -51,13 +51,13 @@ jobs:
       with:
         name: bs-gen
     - name: ls
-      run: ls -ltr
+      run: ls -ltr ..
     - name: pwd
       run: pwd
     - name: Build
       uses: docker/build-push-action@v3
       with:
         context: .
-        file: ./Dockerfile
+        file: ../Dockerfile
         push: false
         tags: asdf/qwer:1.2.3

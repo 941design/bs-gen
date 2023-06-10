@@ -1,5 +1,5 @@
 FROM alpine:3.18
 
-ADD bs-gen bs-gen
+ADD bs_gen bs_gen
 
-CMD [ "./bs-gen" ]
+CMD [ "./bs_gen" ]
