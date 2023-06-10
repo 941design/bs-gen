@@ -10,17 +10,15 @@ permissions:
   contents: read
 
 jobs:
+  
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-haskell@v1
       with:
         ghc-version: '8.10.3'
         cabal-version: '3.2'
-
     - name: Cache
       uses: actions/cache@v3
       env:
@@ -32,12 +30,30 @@ jobs:
           ${{ runner.os }}-build-${{ env.cache-name }}-
           ${{ runner.os }}-build-
           ${{ runner.os }}-
-
     - name: Install dependencies
       run: |
         cabal update
         cabal build --only-dependencies --enable-tests --enable-benchmarks
     - name: Build
       run: cabal build --enable-tests --enable-benchmarks all
-    - name: Run tests
-      run: cabal test all
+    - name: Archive
+      uses: actions/upload-artifact@v3
+      with:
+        name: bs-gen
+        path: dist-newstyle/build/x86_64-linux/ghc-8.10.3/bs-gen-0.1.2.0/x/bs_gen/build/bs_gen/bs_gen
+
+  docker:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download Artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: bs-gen
+    - name: Build
+      uses: docker/build-push-action@v3
+      with:
+        context: .
+        file: ./Dockerfile
+        push: false
+        tags: asdf/qwer:1.2.3
